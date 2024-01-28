@@ -61,3 +61,13 @@ body{
     border: 1px solid #000000;
     cursor: pointer;
 }
+.red {
+    background-color: #fd0404;
+    border: 1px solid #000000;
+    cursor: pointer;
+}
+.green {
+    background-color: #2efd04;
+    border: 1px solid #000000;
+    cursor: pointer;
+}
