@@ -133,25 +133,92 @@ function attack(event) {
 
     if (clickedCell.classList.contains('cellbot')) {
         if (clickedCell.classList.contains('enemiships')) {
-            console.log("красава попав");
+
             clickedCell.classList.remove('enemiships');
             clickedCell.classList.add('kill');
         } else {
-            console.log("лох промахнувся");
         }
         clickedCell.innerHTML = `<span class="x"></span>`;
         attackEnemi();
     }
 }
 
+let botHit = {
+    lastShotX: 0,
+    lastShotY: 0,
+    hit: false,
+    checkZone: 0,
+};
+
+let posFire = [];
 function attackEnemi() {
     let x, y;
-    x = Math.floor(Math.random() * 10);
-    y = Math.floor(Math.random() * 10);
-    if (document.querySelector(`.y${rows[y] + colums[x]}`).classList.contains('aliansships')) {
-        document.querySelector(`.y${rows[y] + colums[x]}`).classList.remove("aliansships");
-        document.querySelector(`.y${rows[y] + colums[x]}`).classList.add("kill");
+
+    do {
+        x = Math.floor(Math.random() * 10);
+        y = Math.floor(Math.random() * 10);
+    } while (posFire.includes(rows[y] + colums[x]));
+
+    posFire.push(rows[y] + colums[x]);
+    console.log(posFire);
+    if(botHit.hit == true && botHit.checkZone < 4) {
+        console.log(botHit);
+        if(botHit.lastShotX == 0 || botHit.lastShotY == 0 || botHit.lastShotX == 9 || botHit.lastShotY == 9) {
+            console.log("біля краю");
+            botHit.hit = false;
+        } else {
+            if (botHit.checkZone == 0) {
+                if (!posFire.includes(rows[botHit.lastShotY - 1] + colums[botHit.lastShotX])) {
+                    if(document.querySelector(`.y${rows[botHit.lastShotY - 1] + colums[botHit.lastShotX]}`).classList.contains('aliansships')) {
+                        document.querySelector(`.y${rows[botHit.lastShotY - 1] + colums[botHit.lastShotX]}`).classList.remove('aliansships');
+                        document.querySelector(`.y${rows[botHit.lastShotY - 1] + colums[botHit.lastShotX]}`).classList.add('kill');
+                    }
+                    botHit.checkZone = 1;
+                    document.querySelector(`.y${rows[botHit.lastShotY - 1] + colums[botHit.lastShotX]}`).innerHTML = `<span class="x"></span>`
+                } else {
+                    
+                }
+            } else if (botHit.checkZone == 1) {
+                if (!posFire.includes(rows[botHit.lastShotY] + colums[botHit.lastShotX + 1])) {
+                    if(document.querySelector(`.y${rows[botHit.lastShotY] + colums[botHit.lastShotX + 1]}`).classList.contains('aliansships')) {
+                        document.querySelector(`.y${rows[botHit.lastShotY] + colums[botHit.lastShotX + 1]}`).classList.remove('aliansships');
+                        document.querySelector(`.y${rows[botHit.lastShotY] + colums[botHit.lastShotX + 1]}`).classList.add('kill');
+                    }
+                    botHit.checkZone = 2;
+                    document.querySelector(`.y${rows[botHit.lastShotY] + colums[botHit.lastShotX + 1]}`).innerHTML = `<span class="x"></span>`
+                }
+            } else if (botHit.checkZone == 2) {
+                if (!posFire.includes(rows[botHit.lastShotY + 1] + colums[botHit.lastShotX])) {
+                    if(document.querySelector(`.y${rows[botHit.lastShotY + 1] + colums[botHit.lastShotX]}`).classList.contains('aliansships')) {
+                        document.querySelector(`.y${rows[botHit.lastShotY + 1] + colums[botHit.lastShotX]}`).classList.remove('aliansships');
+                        document.querySelector(`.y${rows[botHit.lastShotY + 1] + colums[botHit.lastShotX]}`).classList.add('kill');
+                    }
+                    botHit.checkZone = 3;
+                    document.querySelector(`.y${rows[botHit.lastShotY + 1] + colums[botHit.lastShotX]}`).innerHTML = `<span class="x"></span>`
+                }
+            } else if (botHit.checkZone == 3) {
+                if (!posFire.includes(rows[botHit.lastShotY] + colums[botHit.lastShotX - 1])) {
+                    if(document.querySelector(`.y${rows[botHit.lastShotY] + colums[botHit.lastShotX - 1]}`).classList.contains('aliansships')) {
+                        document.querySelector(`.y${rows[botHit.lastShotY] + colums[botHit.lastShotX - 1]}`).classList.remove('aliansships');
+                        document.querySelector(`.y${rows[botHit.lastShotY] + colums[botHit.lastShotX - 1]}`).classList.add('kill');
+                    }
+                    botHit.checkZone = 4;
+                    document.querySelector(`.y${rows[botHit.lastShotY] + colums[botHit.lastShotX - 1]}`).innerHTML = `<span class="x"></span>`
+                }
+            }
+        }
+    } else {
+        if (document.querySelector(`.y${rows[y] + colums[x]}`).classList.contains('aliansships')) {
+            document.querySelector(`.y${rows[y] + colums[x]}`).classList.remove("aliansships");
+            document.querySelector(`.y${rows[y] + colums[x]}`).classList.add("kill");
+            console.log("бот влучив в", x, y);
+            botHit.checkZone = 0;
+            botHit.hit = true;
+            botHit.lastShotX = x;
+            botHit.lastShotY = y;
+            console.log(botHit);
+        }
+        document.querySelector(`.y${rows[y] + colums[x]}`).innerHTML = `<span class="x"></span>`;
     }
-    document.querySelector(`.y${rows[y] + colums[x]}`).innerHTML = `<span class="x"></span>`;
 
 };
