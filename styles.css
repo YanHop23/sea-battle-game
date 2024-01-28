@@ -56,13 +56,27 @@ body{
 
     grid-template: repeat(10, 1fr) / repeat(10, 1fr);
 }
-.cell {
+.cellbot {
     background-color: #504b4b;
     border: 1px solid #000000;
     cursor: pointer;
+    font-size: 20px;
+    position: relative;
 }
-.red {
-    background-color: #fd0404;
+.cellyou {
+    background-color: #504b4b;
+    border: 1px solid #000000;
+    cursor: pointer;
+    position: relative;
+
+}
+.aliansships {
+    background-color: #3538f0;
+    border: 1px solid #000000;
+    cursor: pointer;
+}
+.enemiships {
+    background-color: #504b4b;
     border: 1px solid #000000;
     cursor: pointer;
 }
@@ -71,3 +85,27 @@ body{
     border: 1px solid #000000;
     cursor: pointer;
 }
+.kill {
+    background-color: #e00e0e;
+    border: 1px solid #000000;
+}
+.x::after {
+    position: absolute;
+    content: '';
+    background-color: #000000;
+    width: 2px;
+    height: 40px;
+    transform: rotate(45deg);
+    left: 13px;
+    top: -6px
+}
+.x::before {
+    position: absolute;
+    content: '';
+    background-color: #000000;
+    width: 2px;
+    height: 40px;
+    transform: rotate(-45deg);
+    left: 13px;
+    top: -6px
+} 

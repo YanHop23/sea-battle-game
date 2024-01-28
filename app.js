@@ -2,6 +2,7 @@ const areaYou = document.querySelector(".game__area-you");
 const areaBot = document.querySelector(".game__area-bot");
 const startBtn = document.querySelector(".startbtn");
 const restartBtn = document.querySelector(".restartbtn");
+let cellsBot = [];
 
 const rows = ["1", "2","3","4","5","6","7","8","9","10"];
 const colums = ["A", "B","C","D","E","F","G","H","I","J"];
@@ -19,11 +20,13 @@ startBtn.addEventListener('click', () => {
     if (areaYou.innerHTML == '') {
         for (let i = 0; i < 10; i++) {
             for (let j = 0; j < 10; j++) {
-                areaYou.innerHTML += `<div class="y${rows[i] + colums[j]} cell">0</div>`;
-                areaBot.innerHTML += `<div class="b${rows[i] + colums[j]} cell">x</div>`;
+                areaYou.innerHTML += `<div class="y${rows[i] + colums[j]} cellyou"></div>`;
+                areaBot.innerHTML += `<div class="b${rows[i] + colums[j]} cellbot"></div>`;
             };
         };
-        generateShipsBot();
+        generateShips();
+        cellsBot = document.querySelectorAll(".cellbot");
+
     }
 });
 restartBtn.addEventListener('click', () => {
@@ -32,32 +35,32 @@ restartBtn.addEventListener('click', () => {
     if (areaYou.innerHTML == '') {
         for (let i = 0; i < 10; i++) {
             for (let j = 0; j < 10; j++) {
-                areaYou.innerHTML += `<div class="y${rows[i] + colums[j]} cell">0</div>`;
-                areaBot.innerHTML += `<div class="b${rows[i] + colums[j]} cell">x</div>`;
+                areaYou.innerHTML += `<div class="y${rows[i] + colums[j]} cellyou"></div>`;
+                areaBot.innerHTML += `<div class="b${rows[i] + colums[j]} cellbot"></div>`;
             };
         };
-        generateShipsBot();
+        generateShips();
+        cellsBot = document.querySelectorAll(".cellbot");
     }
 });
 
 let positions = [];
 
-function generateShipsBot() {
+function generateShips() {
     positions = [];
-    generateShip(4, 1); 
-    generateShip(3, 2); 
-    generateShip(2, 3); 
-    generateShip(1, 4); 
+    generateShipBot(4, 1); 
+    generateShipBot(3, 2); 
+    generateShipBot(2, 3); 
+    generateShipBot(1, 4); 
     positions = [];
-    console.log(positions);
     generateShipYou(4, 1); 
     generateShipYou(3, 2); 
     generateShipYou(2, 3); 
     generateShipYou(1, 4);
-    console.log(positions); 
+    areaBot.addEventListener('click', attack);
 }
 
-const cells = document.querySelectorAll(".cell");
+
 
 function generatePositions(size) {
         const isVertical = Math.round(Math.random()); // 0 - горизонтально, 1 - вертикально
@@ -111,15 +114,44 @@ function generateShipYou(size, number) {
     for (let i = 0; i < number; i++) {
         generatePositions(size);
         positions.forEach(position => {
-            document.querySelector(`.y${position}`).classList.add("red");
+            document.querySelector(`.y${position}`).classList.add("aliansships");
         });
     }
 }
-function generateShip(size, number) {
+function generateShipBot(size, number) {
     for (let i = 0; i < number; i++) {
         generatePositions(size);
         positions.forEach(position => {
-            document.querySelector(`.b${position}`).classList.add("red");
+            document.querySelector(`.b${position}`).classList.add("enemiships");
         });
     }
 }
+
+
+function attack(event) {
+    const clickedCell = event.target;
+
+    if (clickedCell.classList.contains('cellbot')) {
+        if (clickedCell.classList.contains('enemiships')) {
+            console.log("красава попав");
+            clickedCell.classList.remove('enemiships');
+            clickedCell.classList.add('kill');
+        } else {
+            console.log("лох промахнувся");
+        }
+        clickedCell.innerHTML = `<span class="x"></span>`;
+        attackEnemi();
+    }
+}
+
+function attackEnemi() {
+    let x, y;
+    x = Math.floor(Math.random() * 10);
+    y = Math.floor(Math.random() * 10);
+    if (document.querySelector(`.y${rows[y] + colums[x]}`).classList.contains('aliansships')) {
+        document.querySelector(`.y${rows[y] + colums[x]}`).classList.remove("aliansships");
+        document.querySelector(`.y${rows[y] + colums[x]}`).classList.add("kill");
+    }
+    document.querySelector(`.y${rows[y] + colums[x]}`).innerHTML = `<span class="x"></span>`;
+
+};
