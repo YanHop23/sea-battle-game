@@ -40,79 +40,86 @@ restartBtn.addEventListener('click', () => {
     }
 });
 
+let positions = [];
+
+function generateShipsBot() {
+    positions = [];
+    generateShip(4, 1); 
+    generateShip(3, 2); 
+    generateShip(2, 3); 
+    generateShip(1, 4); 
+    positions = [];
+    console.log(positions);
+    generateShipYou(4, 1); 
+    generateShipYou(3, 2); 
+    generateShipYou(2, 3); 
+    generateShipYou(1, 4);
+    console.log(positions); 
+}
 
 const cells = document.querySelectorAll(".cell");
 
-function generateShipsBot() {
-    let positions = [];
-    
-    function generatePositions () {
-        const size = 10;
-        let k = 1;
-        while(k) {
-            let x = Math.floor(Math.random() * 10);
-            let y = Math.floor(Math.random() * 10);
-            let newPos =  rows[y] + colums[x];
+function generatePositions(size) {
+        const isVertical = Math.round(Math.random()); // 0 - горизонтально, 1 - вертикально
+        let x, y;
+        let isValid = false;
 
-            positions.push(newPos);
-            let p = 1; 
-            while(p) {
-                    let h = Math.round(Math.random());
-                    console.log(h);
-                    if (h == 1) {
-                        
+        do {
+            x = Math.floor(Math.random() * 10);
+            y = Math.floor(Math.random() * 10);
 
-                        if (x >= 7) {
-                            
-                            for (h; h < 4; h++) {
-                                x--;
-                                let newPos =  rows[y] + colums[x];
-                                positions.push(newPos);
-                                
-                               
-                            }
-                            
-                            
-                        } else {
-                            
-                            for (h; h < 4; h++) {
-                                x++;
-                                let newPos =  rows[y] + colums[x];
-                                positions.push(newPos);
-                                
-                            }
+            isValid = true;
+
+            for (let j = -1; j <= size; j++) {
+                for (let k = -1; k <= 1; k++) {
+                    // Перевірка чи координата не входить в positions та чи не є сусідньою
+                    if (isVertical) {
+                        if (positions.includes(rows[y + j] + colums[x + k]) ||
+                            (j !== -1 && j !== size && k !== 0 && positions.includes(rows[y + j] + colums[x + k - 1])) ||
+                            (j !== -1 && j !== size && k !== 0 && positions.includes(rows[y + j] + colums[x + k + 1]))) {
+                            isValid = false;
+                            break;
                         }
-                    } else if (h == 0) {
-                        
-                        if (y >= 7) {
-                            for (h; h < 3; h++) {
-                                y--;
-                                let newPos =  rows[y] + colums[x];
-                                positions.push(newPos);
-                                
-                            }
-                            
-                        } else {
-                            for (h; h < 3; h++) {
-                                y++;
-                                let newPos =  rows[y] + colums[x];
-                                positions.push(newPos);
-                               
-                            }
+                    } else {
+                        if (positions.includes(rows[y + k] + colums[x + j]) ||
+                            (k !== 0 && j !== -1 && j !== size && positions.includes(rows[y + k - 1] + colums[x + j])) ||
+                            (k !== 0 && j !== -1 && j !== size && positions.includes(rows[y + k + 1] + colums[x + j]))) {
+                            isValid = false;
+                            break;
                         }
                     }
-                
-                    console.log(positions)
-                    p = 0;
-                
+                }
             }
-            k = 0;
-        };
-    };
-    generatePositions();
-    positions.forEach(position => {
-        document.querySelector(`.b${position}`).classList.add("red");
-    });
-    
-    // document.querySelector(`.${coordinatesYou[0]}`).classList.add("red");
-};
+
+            // Перевірка чи корабель не виходить за межі поля
+            if (isVertical && y + size > 10) {
+                isValid = false;
+            } else if (!isVertical && x + size > 10) {
+                isValid = false;
+            }
+        } while (!isValid);
+
+        for (let j = 0; j < size; j++) {
+            if (isVertical) {
+                positions.push(rows[y + j] + colums[x]);
+            } else {
+                positions.push(rows[y] + colums[x + j]);
+            }
+        }
+}
+function generateShipYou(size, number) {
+    for (let i = 0; i < number; i++) {
+        generatePositions(size);
+        positions.forEach(position => {
+            document.querySelector(`.y${position}`).classList.add("red");
+        });
+    }
+}
+function generateShip(size, number) {
+    for (let i = 0; i < number; i++) {
+        generatePositions(size);
+        positions.forEach(position => {
+            document.querySelector(`.b${position}`).classList.add("red");
+        });
+    }
+}
